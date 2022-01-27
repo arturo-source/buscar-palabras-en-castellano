@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <input id="last_vowel" class="vowel" type="text" placeholder="Última vocal">
+    <input id="strict_diacritic" type="checkbox">
+    <label for="strict_diacritic">Tener en cuenta las tildes</label>
+    <button onclick="add_vowel()">Añade vocal</button>
+    <button onclick="search()">Busca</button>
+    <div id="result"></div>
+    <script>
+        var allWords = [];
+        function readTextFile(file) {
+            var rawFile = new XMLHttpRequest();
+            rawFile.open("GET", file, false);
+            rawFile.onreadystatechange = function () {
+                if (rawFile.readyState === 4) {
+                    if (rawFile.status === 200 || rawFile.status == 0) {
+                        var allText = rawFile.responseText;
+                        allWords = allText.split('\n');
+                    }
+                }
+            }
+            rawFile.send(null);
+        }
+        window.onload = () => {
+            readTextFile("https://raw.githubusercontent.com/JorgeDuenasLerin/diccionario-espanol-txt/master/0_palabras_todas.txt");
+        }
+
+        function add_vowel() {
+            document.getElementById("last_vowel").insertAdjacentHTML('beforebegin',
+                `<input class="vowel" type="text">`
+            );
+        }
+        function search() {
+            let vowel_inputs = document.getElementsByClassName('vowel');
+            let vowels = [...vowel_inputs].map((el) => el.value);
+            let vowels_len = vowels.length;
+            let result = "Resultados de las palabras que contienen las vocales:<br>";
+
+            for (let word of allWords) {
+                let original_word = word;
+                if (!strict_diacritic)
+                    word = word.normalize("NFD").replace(/\p{Diacritic}/gu, "");
+
+                let last_vowels = word.match(/[aeiouáéíóú]/ig);
+
+                if (last_vowels != null && last_vowels.length >= vowels_len) {
+                    let coincide = true;
+                    for (let i = -1; i >= -vowels_len; i--) {
+                        coincide &= vowels.at(i) == last_vowels.at(i);
+                    }
+                    if (coincide) {
+                        result += `${original_word}<br>`;
+                    }
+                }
+            }
+
+            document.getElementById("result").innerHTML = result;
+        }
+    </script>
+</body>
+
+</html>

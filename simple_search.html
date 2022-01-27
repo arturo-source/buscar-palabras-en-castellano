@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <input id="contain" type="text" placeholder="La palabra contiene ...">
+    <input id="end_with" type="text" placeholder="La palabra acaba en ...">
+    <input id="strict_diacritic" type="checkbox">
+    <label for="strict_diacritic">Tener en cuenta las tildes</label>
+    <button onclick="search()">Busca</button>
+    <div id="result"></div>
+    <script>
+        var allWords = [];
+        function readTextFile(file) {
+            var rawFile = new XMLHttpRequest();
+            rawFile.open("GET", file, false);
+            rawFile.onreadystatechange = function () {
+                if (rawFile.readyState === 4) {
+                    if (rawFile.status === 200 || rawFile.status == 0) {
+                        var allText = rawFile.responseText;
+                        allWords = allText.split('\n');
+                    }
+                }
+            }
+            rawFile.send(null);
+        }
+        window.onload = () => {
+            readTextFile("https://raw.githubusercontent.com/JorgeDuenasLerin/diccionario-espanol-txt/master/0_palabras_todas.txt");
+        }
+        function search() {
+            let contain = document.getElementById("contain").value;
+            let end_with = document.getElementById("end_with").value;
+            let strict_diacritic = document.getElementById("strict_diacritic").checked;
+            let end_with_len = end_with.length;
+
+            let result = "Resultados que contienen " + contain + " || Y acaba en " + end_with + ":<br>";
+
+            for (let word of allWords) {
+                let original_word = word;
+                if (!strict_diacritic)
+                    word = word.normalize("NFD").replace(/\p{Diacritic}/gu, "");
+
+                if (word.length > end_with_len && word.substr(word.length - end_with_len) == end_with && word.includes(contain)) {
+                    result += `${original_word}<br>`;
+                }
+            }
+
+            document.getElementById("result").innerHTML = result;
+        }
+    </script>
+</body>
+
+</html>
