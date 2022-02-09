@@ -6,54 +6,197 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        .container {
+            width: 80%;
+            height: auto;
+            background-color: #f2e9e4;
+            border-radius: 10px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 1%;
+        }
+
+        .inputscontainer {
+            display: flex;
+            justify-content: space-evenly;
+        }
+
+        input {
+            border: 1px solid #aaa;
+            border-radius: 4px;
+            transition: 2s;
+        }
+
+        input:focus {
+            border-color: #9a8c98;
+            box-shadow: 0 0 8px 0 #9a8c98;
+        }
+
+        .btn {
+            font-weight: bold;
+            padding: 5px 30px;
+            border-radius: 5px;
+            outline: none;
+            border: none;
+            background: #22223b;
+            color: white;
+        }
+
+        .btn:disabled {
+            background-color: #9a8c98;
+        }
+
+        .tablecontainer {
+            width: 80%;
+            margin: 100px auto;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+    </style>
 </head>
 
 <body>
-    <input id="contain" type="text" placeholder="La palabra contiene ...">
-    <input id="end_with" type="text" placeholder="La palabra acaba en ...">
-    <input id="strict_diacritic" type="checkbox">
-    <label for="strict_diacritic">Tener en cuenta las tildes</label>
-    <button onclick="search()">Busca</button>
-    <div id="result"></div>
-    <script>
-        var allWords = [];
-        function readTextFile(file) {
-            var rawFile = new XMLHttpRequest();
-            rawFile.open("GET", file, false);
-            rawFile.onreadystatechange = function () {
-                if (rawFile.readyState === 4) {
-                    if (rawFile.status === 200 || rawFile.status == 0) {
-                        var allText = rawFile.responseText;
-                        allWords = allText.split('\n');
-                    }
-                }
-            }
-            rawFile.send(null);
-        }
-        window.onload = () => {
-            readTextFile("https://raw.githubusercontent.com/JorgeDuenasLerin/diccionario-espanol-txt/master/0_palabras_todas.txt");
-        }
-        function search() {
-            let contain = document.getElementById("contain").value;
-            let end_with = document.getElementById("end_with").value;
-            let strict_diacritic = document.getElementById("strict_diacritic").checked;
-            let end_with_len = end_with.length;
+    <div class="container">
+        <div class="container">
+            <h1>Busca palabras según los siguientes criterios</h1>
+        </div>
 
-            let result = "Resultados que contienen " + contain + " || Y acaba en " + end_with + ":<br>";
+        <div class="inputscontainer">
+            <div>
+                <label for="contain">La palabra contiene ...</label><br /><input id="contain" type="text">
+            </div>
+            <div>
+                <label for="end_with">La palabra acaba en ...</label><br /><input id="end_with" type="text">
+            </div>
+            <div>
+                &nbsp;<br /><input id="strict_diacritic" type="checkbox">
+                <label for="strict_diacritic">Tener en cuenta las tildes</label>
+            </div>
+            <button class="btn" onclick="search()">Busca</button>
+        </div>
 
-            for (let word of allWords) {
-                let original_word = word;
-                if (!strict_diacritic)
-                    word = word.normalize("NFD").replace(/\p{Diacritic}/gu, "");
-
-                if (word.length > end_with_len && word.substr(word.length - end_with_len) == end_with && word.includes(contain)) {
-                    result += `${original_word}<br>`;
-                }
-            }
-
-            document.getElementById("result").innerHTML = result;
-        }
-    </script>
+        <div class="tablecontainer">
+            <h1 id="msg"></h1>
+            <table id="maintable"></table>
+        </div>
+        <div class="inputscontainer">
+            <button class="btn" id="prev">Previo</button>
+            <button class="btn" id="next">Siguiente</button>
+        </div>
+    </div>
 </body>
+
+<script>
+    var nextBtn, prevBtn;
+
+    var page = 0;
+    var lastPage = -1;
+
+    const rowsPerPage = 4;
+    const cellsPerRow = 5;
+    const cellsPerPage = rowsPerPage * cellsPerRow;
+
+    function changePage() {
+        {
+            if (page == 0) prevBtn.setAttribute("disabled", "");
+            else prevBtn.removeAttribute("disabled", "");
+
+            if (page == lastPage || lastPage == -1) nextBtn.setAttribute("disabled", "");
+            else nextBtn.removeAttribute("disabled", "");
+        }
+
+        let table = document.getElementById("maintable");
+        let initial = page * cellsPerPage;
+
+        let tableContent = "<tr>";
+        for (let i = initial; i < initial + cellsPerPage; i++) {
+            if (i % cellsPerRow == 0 && i != initial) {
+                tableContent += "</tr><tr>";
+            }
+
+            if (i < searchedWords.length)
+                tableContent += `<td>${searchedWords[i]}</td>`;
+            else
+                tableContent += `<td>&nbsp;</td>`;
+        }
+        tableContent += "</tr>";
+
+        table.innerHTML = tableContent;
+    }
+
+    window.onload = () => {
+        readTextFile("https://raw.githubusercontent.com/arturo-source/buscar-palabras-en-castellano/main/todas_las_palabras_esp.txt");
+
+        prevBtn = document.getElementById("prev");
+        nextBtn = document.getElementById("next");
+
+        prevBtn.onclick = prev;
+        nextBtn.onclick = next;
+
+        changePage();
+    };
+
+    function next() {
+        if (page < lastPage) {
+            page++;
+            changePage();
+        }
+    }
+    function prev() {
+        if (page > 0) {
+            page--;
+            changePage();
+        }
+    }
+</script>
+<script>
+    var allWords = [];
+    var allWordsNormalized = [];
+    var searchedWords = [];
+
+    function readTextFile(file) {
+        var rawFile = new XMLHttpRequest();
+        rawFile.open("GET", file, true);
+        rawFile.onreadystatechange = function () {
+            if (rawFile.readyState === 4) {
+                if (rawFile.status === 200 || rawFile.status == 0) {
+                    var allText = rawFile.responseText;
+                    allWords = allText.split('\n');
+                    allWordsNormalized = allWords.map((word) => word.normalize("NFD").replace(/\p{Diacritic}/gu, ""))
+                }
+            }
+        }
+        rawFile.send(null);
+    }
+
+    function search() {
+        let contain = document.getElementById("contain").value;
+        let end_with = document.getElementById("end_with").value;
+        let strict_diacritic = document.getElementById("strict_diacritic").checked;
+        let end_with_len = end_with.length;
+
+        searchedWords = allWords.filter((word, i) => {
+            if (!strict_diacritic)
+                word = allWordsNormalized[i]
+
+            return (word.length > end_with_len && word.substr(word.length - end_with_len) == end_with && word.includes(contain))
+        })
+
+        page = 0;
+        lastPage = Math.ceil(searchedWords.length / cellsPerPage) - 1;
+        document.getElementById("msg").innerText = (lastPage != -1) ? "Resultado:" : "No se ha encontrado ningún resultado.";
+        changePage();
+    }
+</script>
 
 </html>
