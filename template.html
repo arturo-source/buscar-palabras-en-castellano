@@ -102,10 +102,11 @@
     var nextBtn, prevBtn;
 
     var page = 0;
+    var lastPage = -1;
+
     const rowsPerPage = 2;
     const cellsPerRow = 4;
     const cellsPerPage = rowsPerPage * cellsPerRow;
-    var lastPage = -1;
 
     function changePage() {
         {
@@ -162,6 +163,7 @@
 </script>
 <script>
     var allWords = [];
+    var allWordsNormalized = [];
     var searchedWords = [];
 
     function readTextFile(file) {
@@ -172,6 +174,7 @@
                 if (rawFile.status === 200 || rawFile.status == 0) {
                     var allText = rawFile.responseText;
                     allWords = allText.split('\n');
+                    allWordsNormalized = allWords.map((word) => word.normalize("NFD").replace(/\p{Diacritic}/gu, ""))
                 }
             }
         }
@@ -179,11 +182,11 @@
     }
 
     function search() {
-        //...
+        // Code...
 
         page = 0;
         lastPage = Math.ceil(searchedWords.length / cellsPerPage) - 1;
-        document.getElementById("msg").innerText = (lastPage != -1) ? "Resultado:" : "No se ha encontrado ningún resultado.";   
+        document.getElementById("msg").innerText = (lastPage != -1) ? "Resultado:" : "No se ha encontrado ningún resultado.";
         changePage();
     }
 </script>
