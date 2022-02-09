@@ -88,21 +88,8 @@
         </div>
 
         <div class="tablecontainer">
-            <p id=></p>
-            <table id="maintable">
-                <tr>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                </tr>
-                <tr>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                </tr>
-            </table>
+            <h1 id="msg"></h1>
+            <table id="maintable"></table>
         </div>
         <div class="inputscontainer">
             <button class="btn" id="prev">Previo</button>
@@ -195,6 +182,11 @@
         //...
 
         lastPage = Math.ceil(searchedWords.length / cellsPerPage) - 1;
+        if (lastPage != -1)
+            document.getElementById("msg").innerText = "Resultado:"
+        else
+            document.getElementById("msg").innerText = "No se ha encontrado ningún resultado."
+
         changePage();
     }
 </script>
