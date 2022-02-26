@@ -80,8 +80,14 @@
                 &nbsp;<br /><input id="strict_diacritic" type="checkbox">
                 <label for="strict_diacritic">Tener en cuenta las tildes</label>
             </div>
-            <button class="btn" onclick="add_vowel()">Añade vocal</button>
-            <button class="btn" onclick="search()">Busca</button>
+            <div>
+                &nbsp;<br />
+                <button class="btn" onclick="add_vowel()">Añade vocal</button>
+            </div>
+            <div>
+                &nbsp;<br />
+                <button class="btn" onclick="search()">Busca</button>
+            </div>
         </div>
 
         <div class="tablecontainer">
@@ -197,7 +203,7 @@
         searchedWords = allWords.filter((word, i) => {
             if (!strict_diacritic)
                 word = allWordsNormalized[i]
-            
+
             console.log({ word })
 
             let last_vowels = word.match(/[aeiouáéíóú]/ig);
