@@ -45,7 +45,7 @@ class Paginator {
       this.firstBtn?.removeAttribute("disabled", "");
     }
 
-    if (this.currentPage == this.lastPage || this.lastPage == -1) {
+    if (this.currentPage == this.lastPage || this.lastPage == 0) {
       this.nextBtn?.setAttribute("disabled", "");
       this.lastBtn?.setAttribute("disabled", "");
     } else {
@@ -54,6 +54,14 @@ class Paginator {
     }
 
     this.renderMethod();
+  }
+
+  getCurrentPageInfo(messageGeneratorFunc) {
+    return messageGeneratorFunc({
+      count: this.cellsPerPage,
+      curr: this.currentPage,
+      last: this.lastPage,
+    });
   }
 
   goToPrevPage() {
@@ -81,7 +89,7 @@ class Paginator {
     return this.rowsPerPage * this.cellsPerRow;
   }
   get lastPage() {
-    return Math.ceil(this.elements.length / this.cellsPerPage) - 1;
+    return Math.floor(this.elements.length / this.cellsPerPage);
   }
   get currentElements() {
     let next_pos = this.currentPage * this.cellsPerPage;
