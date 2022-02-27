@@ -20,10 +20,17 @@ class Paginator {
     this.firstBtn = firstBtn;
     this.lastBtn = lastBtn;
 
-    if (this.prevBtn != undefined) this.prevBtn.onclick = this.goToPrevPage;
-    if (this.nextBtn != undefined) this.nextBtn.onclick = this.goToNextPage;
-    if (this.firstBtn != undefined) this.firstBtn.onclick = this.goToFirstPage;
-    if (this.lastBtn != undefined) this.lastBtn.onclick = this.goToLastPage;
+    if (this.prevBtn != undefined)
+      this.prevBtn.onclick = () => this.goToPrevPage();
+
+    if (this.nextBtn != undefined)
+      this.nextBtn.onclick = () => this.goToNextPage();
+
+    if (this.firstBtn != undefined)
+      this.firstBtn.onclick = () => this.goToFirstPage();
+
+    if (this.lastBtn != undefined)
+      this.lastBtn.onclick = () => this.goToLastPage();
   }
 
   disable() {
@@ -93,10 +100,10 @@ class Paginator {
 
 // Example
 window.onload = () => {
-  prevBtn = document.getElementById("prev");  // Introduce btn ID
-  nextBtn = document.getElementById("next");  // Introduce btn ID
+  prevBtn = document.getElementById("prev"); // Introduce btn ID
+  nextBtn = document.getElementById("next"); // Introduce btn ID
   firstBtn = document.getElementById("first"); // Introduce btn ID
-  lastBtn = document.getElementById("last");  // Introduce btn ID
+  lastBtn = document.getElementById("last"); // Introduce btn ID
 
   var paginator = new Paginator({
     elements: [2, 3, 65, "sd", "dfo", "95j", 3],
