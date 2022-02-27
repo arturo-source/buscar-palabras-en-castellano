@@ -3,6 +3,7 @@ class Paginator {
     elements,
     cellsPerRow = 5,
     rowsPerPage = 4,
+    renderMethod,
     prevBtn,
     nextBtn,
     firstBtn,
@@ -14,6 +15,8 @@ class Paginator {
 
     this.cellsPerRow = cellsPerRow;
     this.rowsPerPage = rowsPerPage;
+
+    this.renderMethod = renderMethod;
 
     this.prevBtn = prevBtn;
     this.nextBtn = nextBtn;
@@ -33,7 +36,7 @@ class Paginator {
       this.lastBtn.onclick = () => this.goToLastPage();
   }
 
-  disable() {
+  render() {
     if (this.currentPage == 0) {
       this.prevBtn?.setAttribute("disabled", "");
       this.firstBtn?.setAttribute("disabled", "");
@@ -49,27 +52,29 @@ class Paginator {
       this.nextBtn?.removeAttribute("disabled", "");
       this.lastBtn?.removeAttribute("disabled", "");
     }
+
+    this.renderMethod();
   }
 
   goToPrevPage() {
     if (this.currentPage > 0) {
       this.currentPage--;
-      this.disable();
+      this.render();
     }
   }
   goToNextPage() {
     if (this.currentPage < this.lastPage) {
       this.currentPage++;
-      this.disable();
+      this.render();
     }
   }
   goToFirstPage() {
     this.currentPage = 0;
-    this.disable();
+    this.render();
   }
   goToLastPage() {
     this.currentPage = this.lastPage;
-    this.disable();
+    this.render();
   }
 
   get cellsPerPage() {
@@ -99,6 +104,9 @@ class Paginator {
 }
 
 // Example
+function render() {
+  // Some code rendering the table
+}
 window.onload = () => {
   prevBtn = document.getElementById("prev"); // Introduce btn ID
   nextBtn = document.getElementById("next"); // Introduce btn ID
@@ -109,6 +117,7 @@ window.onload = () => {
     elements: [2, 3, 65, "sd", "dfo", "95j", 3],
     cellsPerRow: 5,
     rowsPerPage: 4,
+    renderMethod: render,
     prevBtn: prevBtn,
     nextBtn: nextBtn,
     firstBtn: firstBtn,
