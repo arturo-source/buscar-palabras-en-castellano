@@ -102,27 +102,3 @@ class Paginator {
     return table;
   }
 }
-
-// Example
-function render() {
-  // Some code rendering the table
-}
-window.onload = () => {
-  prevBtn = document.getElementById("prev"); // Introduce btn ID
-  nextBtn = document.getElementById("next"); // Introduce btn ID
-  firstBtn = document.getElementById("first"); // Introduce btn ID
-  lastBtn = document.getElementById("last"); // Introduce btn ID
-
-  var paginator = new Paginator({
-    elements: [2, 3, 65, "sd", "dfo", "95j", 3],
-    cellsPerRow: 5,
-    rowsPerPage: 4,
-    renderMethod: render,
-    prevBtn: prevBtn,
-    nextBtn: nextBtn,
-    firstBtn: firstBtn,
-    lastBtn: lastBtn,
-  });
-
-  // var elements = paginator.currentElements
-};
