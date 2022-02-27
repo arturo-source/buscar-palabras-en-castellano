@@ -93,10 +93,10 @@ class Paginator {
 
 // Example
 window.onload = () => {
-  prevBtn = document.getElementById("prev"); // Introduce btn ID
-  nextBtn = document.getElementById("next"); // Introduce btn ID
+  prevBtn = document.getElementById("prev");  // Introduce btn ID
+  nextBtn = document.getElementById("next");  // Introduce btn ID
   firstBtn = document.getElementById("first"); // Introduce btn ID
-  lastBtn = document.getElementById("last"); // Introduce btn ID
+  lastBtn = document.getElementById("last");  // Introduce btn ID
 
   var paginator = new Paginator({
     elements: [2, 3, 65, "sd", "dfo", "95j", 3],
@@ -104,6 +104,8 @@ window.onload = () => {
     rowsPerPage: 4,
     prevBtn: prevBtn,
     nextBtn: nextBtn,
+    firstBtn: firstBtn,
+    lastBtn: lastBtn,
   });
 
   // var elements = paginator.currentElements
