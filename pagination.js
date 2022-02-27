@@ -59,8 +59,8 @@ class Paginator {
   getCurrentPageInfo(messageGeneratorFunc) {
     return messageGeneratorFunc({
       count: this.cellsPerPage,
-      curr: this.currentPage,
-      last: this.lastPage,
+      curr: this.currentPage + 1,
+      last: this.lastPage + 1,
     });
   }
 
