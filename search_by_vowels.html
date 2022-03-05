@@ -100,6 +100,9 @@
             <button class="btn" id="next">Siguiente</button>
             <button class="btn" id="last">Última</button>
         </div>
+        <div class="tablecontainer" style="text-align: center;">
+            <span id="pageInfo"></span>
+        </div>
     </div>
 </body>
 
@@ -140,6 +143,7 @@
         tableContent += "</tr>";
 
         document.getElementById("maintable").innerHTML = tableContent;
+        document.getElementById("pageInfo").innerText = paginator.getCurrentPageInfo(({ count, curr, last }) => `${count} palabras | Página ${curr} de ${last}`);
     }
 
     var vowel_pos = 1;
