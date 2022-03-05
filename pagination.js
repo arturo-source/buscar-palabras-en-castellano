@@ -3,7 +3,7 @@ class Paginator {
     elements,
     cellsPerRow = 5,
     rowsPerPage = 4,
-    renderMethod,
+    renderFunc,
     prevBtn,
     nextBtn,
     firstBtn,
@@ -16,7 +16,7 @@ class Paginator {
     this.cellsPerRow = cellsPerRow;
     this.rowsPerPage = rowsPerPage;
 
-    this.renderMethod = renderMethod;
+    this.renderFunc = renderFunc;
 
     this.prevBtn = prevBtn;
     this.nextBtn = nextBtn;
@@ -53,7 +53,7 @@ class Paginator {
       this.lastBtn?.removeAttribute("disabled", "");
     }
 
-    this.renderMethod();
+    this.renderFunc(this.currentElements);
   }
 
   getCurrentPageInfo(messageGeneratorFunc) {

@@ -107,18 +107,11 @@
 <script>
     var allWords = [];
     var allWordsNormalized = [];
-    var paginator = new Paginator({
-        elements: [],
-        renderMethod: renderTable,
-        prevBtn: document.getElementById("prev"),
-        nextBtn: document.getElementById("next"),
-        firstBtn: document.getElementById("first"),
-        lastBtn: document.getElementById("last"),
-    });
+    var paginator;
 
     window.onload = () => {
         readTextFile("https://raw.githubusercontent.com/arturo-source/buscar-palabras-en-castellano/main/todas_las_palabras_esp.txt");
-        renderTable();
+        search();
     };
 
     function readTextFile(file) {
@@ -136,9 +129,9 @@
         rawFile.send(null);
     }
 
-    function renderTable() {
+    function renderTable(currentElements) {
         let tableContent = "<tr>";
-        for (const row of paginator.currentElements) {
+        for (const row of currentElements) {
             for (const cell of row) {
                 tableContent += `<td>${cell == undefined ? '&nbsp;' : cell}</td>`;
             }
@@ -186,7 +179,7 @@
 
         paginator = new Paginator({
             elements: searchedWords,
-            renderMethod: renderTable,
+            renderFunc: renderTable,
             prevBtn: document.getElementById("prev"),
             nextBtn: document.getElementById("next"),
             firstBtn: document.getElementById("first"),
